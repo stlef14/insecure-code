@@ -31,6 +31,7 @@ jobs:
         uses: peaudecastor/boost-security-scanner-github@v2
         env:
           BOOST_CLI_URL: https://assets.build.boostsecurity.io
+          BOOST_LOG_LEVEL: ${{ github.event.inputs.logLevel }}
         with:
           action: scan
           api_endpoint: https://api.boostsecurity.net
