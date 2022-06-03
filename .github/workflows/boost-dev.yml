@@ -90,7 +90,7 @@ jobs:
               --config auto
           api_endpoint: https://api.dev.boostsec.io
           api_token: ${{ secrets.BOOST_API_KEY_DEV }}
-   semgrep-custom-rules:
+  semgrep-custom-rules:
     name: Semgrep - Custom Rules
     runs-on: ubuntu-latest
     steps:
@@ -111,7 +111,7 @@ jobs:
               --config /src/.semgrep/custom-rules.yml
           api_endpoint: https://api.dev.boostsec.io
           api_token: ${{ secrets.BOOST_API_KEY_DEV }}
-   snyk:
+  snyk:
     name: Snyk CLI
     runs-on: ubuntu-latest
     steps:
