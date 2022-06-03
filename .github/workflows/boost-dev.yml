@@ -63,9 +63,9 @@ jobs:
           step_name: brakeman
           action: exec
           additional_args: --require-full-repo
-          exec_command: |
-            docker run -v %CWD%:/code \
-              presidentbeef/brakeman \
+          exec_command: >
+            docker run -v %CWD%:/code
+              presidentbeef/brakeman
               --format sarif --force
           api_endpoint: https://api.dev.boostsec.io
           api_token: ${{ secrets.BOOST_API_KEY_DEV }}
@@ -82,11 +82,11 @@ jobs:
         with:
           step_name: semgrep-auto-config
           action: exec
-          exec_command: |
-            docker run -v %CWD%:/src \
-              returntocorp/semgrep:0.94.0 \
-              scan \
-              --disable-version-check --sarif \
+          exec_command: >
+            docker run -v %CWD%:/src
+              returntocorp/semgrep:0.94.0
+              scan
+              --disable-version-check --sarif
               --config auto
           api_endpoint: https://api.dev.boostsec.io
           api_token: ${{ secrets.BOOST_API_KEY_DEV }}
@@ -103,11 +103,11 @@ jobs:
         with:
           step_name: semgrep-custom-rules
           action: exec
-          exec_command: |
-            docker run -v %CWD%:/src \
-              returntocorp/semgrep:0.94.0 \
-              scan \
-              --disable-version-check --sarif \
+          exec_command: >
+            docker run -v %CWD%:/src
+              returntocorp/semgrep:0.94.0
+              scan
+              --disable-version-check --sarif
               --config /src/.semgrep/custom-rules.yml
           api_endpoint: https://api.dev.boostsec.io
           api_token: ${{ secrets.BOOST_API_KEY_DEV }}
@@ -126,10 +126,10 @@ jobs:
           step_name: snyk
           action: exec
           additional_args: --require-full-repo
-          exec_command: |
-            docker run -e SNYK_TOKEN -v %CWD%:/project --entrypoint snyk -w /project \
-            snyk/snyk-cli:docker \
-            test \
+          exec_command: >
+            docker run -e SNYK_TOKEN -v %CWD%:/project --entrypoint snyk -w /project
+            snyk/snyk-cli:docker
+            test
             --all-projects --sarif
           api_endpoint: https://api.dev.boostsec.io
           api_token: ${{ secrets.BOOST_API_KEY_DEV }}
