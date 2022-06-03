@@ -1,0 +1,3 @@
+.semgrep/custom-rules.yml
+canaries/helm/charts/hello-world/**
+canaries/helm/generated/**
