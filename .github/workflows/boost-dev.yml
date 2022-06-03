@@ -37,7 +37,7 @@ jobs:
         run: |
           cat << EOF > /usr/local/bin/render-k8s.sh
           #!/bin/bash
-          helm template charts/hello-world --output-dir ./generated
+          helm template canaries/helm/charts/hello-world --output-dir ./generated
           EOF
           chmod +x /usr/local/bin/render-k8s.sh
       - name: Native Scanner
@@ -146,10 +146,13 @@ jobs:
           distribution: adopt
           cache: maven
       - name: Prepare Java scanner script
+        env:
+          JAVA_APP_DIR: ./canaries/java/some-java-demo
         run: |
           cat << EOF > /usr/local/bin/scan.sh
           #!/bin/bash
           set -e
+          cd $JAVA_APP_DIR
           mvn clean compile com.github.spotbugs:spotbugs-maven-plugin:spotbugs -Dspotbugs.failOnError=false -Dspotbugs.sarifOutput=true -Dspotbugs.sarifFullPath=true > /dev/null
           jq '.runs[].invocations[].executionSuccessful=true' target/spotbugsSarif.json
           EOF
