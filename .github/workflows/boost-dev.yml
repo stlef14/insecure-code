@@ -148,13 +148,18 @@ jobs:
       - name: Prepare Java scanner script
         env:
           JAVA_APP_DIR: ./canaries/java/some-java-demo
+          BOOST_LOG_LEVEL: ${{ github.event.inputs.logLevel }}
         run: |
           cat << EOF > /usr/local/bin/scan.sh
           #!/bin/bash
           set -e
-          cd $JAVA_APP_DIR
-          mvn clean compile com.github.spotbugs:spotbugs-maven-plugin:spotbugs -Dspotbugs.failOnError=false -Dspotbugs.sarifOutput=true -Dspotbugs.sarifFullPath=true > /dev/null
-          jq '.runs[].invocations[].executionSuccessful=true' target/spotbugsSarif.json
+          if [[ "$BOOST_LOG_LEVEL" == "DEBUG" ]]; then
+            set -x
+          fi
+          pushd $JAVA_APP_DIR
+            mvn clean compile com.github.spotbugs:spotbugs-maven-plugin:spotbugs -Dspotbugs.failOnError=false -Dspotbugs.sarifOutput=true -Dspotbugs.sarifFullPath=true > /dev/null
+            jq '.runs[].invocations[].executionSuccessful=true' target/spotbugsSarif.json
+          popd
           EOF
           chmod +x /usr/local/bin/scan.sh
       - name: FindSecBugs
@@ -183,6 +188,7 @@ jobs:
       - name: Prepare Java scanner script
         env:
           JAVA_APP_DIR: ./canaries/java/some-java-demo
+          BOOST_LOG_LEVEL: ${{ github.event.inputs.logLevel }}
         run: |
           echo "-- Ensure directories for mounted volumes exist"
           chmod 777 $PWD/$JAVA_APP_DIR # Needed by CodeQL Docker to compile to ./target
@@ -198,6 +204,9 @@ jobs:
           cat << EOF > /usr/local/bin/scan.sh
           #!/bin/bash
           set -e
+          if [[ "$BOOST_LOG_LEVEL" == "DEBUG" ]]; then
+            set -x
+          fi
           docker run --rm --name codeql \
             -v $PWD/$JAVA_APP_DIR:/tmp/src \
             -v $HOME/.m2:/home/cli/.m2 \

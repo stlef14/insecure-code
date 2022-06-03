@@ -115,7 +115,7 @@
 					<effort>Max</effort>
 					<threshold>Normal</threshold>
 					<failOnError>false</failOnError>
-					<includeFilterFile>${session.executionRootDirectory}/.github/findsecbugs/spotbugs-security-include.xml</includeFilterFile>
+					<includeFilterFile>${session.executionRootDirectory}/.findsecbugs/spotbugs-security-include.xml</includeFilterFile>
 					<plugins>
 						<plugin>
 							<groupId>com.h3xstream.findsecbugs</groupId>
