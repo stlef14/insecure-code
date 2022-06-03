@@ -10,6 +10,14 @@ on:
         options:
         - INFO
         - DEBUG
+      scriptDebug:
+        description: 'exec-command log level'
+        required: true
+        default: 'INFO'
+        type: choice
+        options:
+        - INFO
+        - DEBUG
   push:
     branches:
       - main
@@ -148,16 +156,22 @@ jobs:
       - name: Prepare Java scanner script
         env:
           JAVA_APP_DIR: ./canaries/java/some-java-demo
-          BOOST_LOG_LEVEL: ${{ github.event.inputs.logLevel }}
+          SCRIPT_LOG_LEVEL: ${{ github.event.inputs.scriptDebug }}
         run: |
           cat << EOF > /usr/local/bin/scan.sh
           #!/bin/bash
           set -e
-          if [[ "$BOOST_LOG_LEVEL" == "DEBUG" ]]; then
+          if [[ "$SCRIPT_LOG_LEVEL" == "DEBUG" ]]; then
             set -x
           fi
           pushd $JAVA_APP_DIR
-            mvn clean compile com.github.spotbugs:spotbugs-maven-plugin:spotbugs -Dspotbugs.failOnError=false -Dspotbugs.sarifOutput=true -Dspotbugs.sarifFullPath=true > /dev/null
+            if [[ "$SCRIPT_LOG_LEVEL" == "DEBUG" ]]; then
+              mvn clean compile com.github.spotbugs:spotbugs-maven-plugin:spotbugs \
+                -Dspotbugs.failOnError=false -Dspotbugs.sarifOutput=true -Dspotbugs.sarifFullPath=true
+            else
+              mvn clean compile com.github.spotbugs:spotbugs-maven-plugin:spotbugs \
+                -Dspotbugs.failOnError=false -Dspotbugs.sarifOutput=true -Dspotbugs.sarifFullPath=true > /dev/null
+            fi
             jq '.runs[].invocations[].executionSuccessful=true' target/spotbugsSarif.json
           popd
           EOF
@@ -188,7 +202,7 @@ jobs:
       - name: Prepare Java scanner script
         env:
           JAVA_APP_DIR: ./canaries/java/some-java-demo
-          BOOST_LOG_LEVEL: ${{ github.event.inputs.logLevel }}
+          SCRIPT_LOG_LEVEL: ${{ github.event.inputs.scriptDebug }}
         run: |
           echo "-- Ensure directories for mounted volumes exist"
           chmod 777 $PWD/$JAVA_APP_DIR # Needed by CodeQL Docker to compile to ./target
@@ -204,19 +218,30 @@ jobs:
           cat << EOF > /usr/local/bin/scan.sh
           #!/bin/bash
           set -e
-          if [[ "$BOOST_LOG_LEVEL" == "DEBUG" ]]; then
+          if [[ "$SCRIPT_LOG_LEVEL" == "DEBUG" ]]; then
             set -x
-          fi
-          docker run --rm --name codeql \
-            -v $PWD/$JAVA_APP_DIR:/tmp/src \
-            -v $HOME/.m2:/home/cli/.m2 \
-            -v $HOME/codeql-dbs:/tmp/dbs \
-            ghcr.io/nealfennimore/codeql:java \
+            docker run --rm --name codeql \
+              -v $PWD/$JAVA_APP_DIR:/tmp/src \
+              -v $HOME/.m2:/home/cli/.m2 \
+              -v $HOME/codeql-dbs:/tmp/dbs \
+              ghcr.io/nealfennimore/codeql:java \
+              codeql database create --language=java --command="mvn clean compile -DskipTests" --overwrite --source-root /tmp/src /tmp/dbs/code-db
+            docker run --rm --name codeql \
+              -v $HOME/codeql-dbs:/tmp/dbs \
+              ghcr.io/nealfennimore/codeql:java \
+              codeql database analyze /tmp/dbs/code-db java-code-scanning.qls --sarif-category=java --format=sarif-latest --output=/tmp/dbs/code-db/output.sarif
+          else
+            docker run --rm --name codeql \
+              -v $PWD/$JAVA_APP_DIR:/tmp/src \
+              -v $HOME/.m2:/home/cli/.m2 \
+              -v $HOME/codeql-dbs:/tmp/dbs \
+              ghcr.io/nealfennimore/codeql:java \
             codeql database create --language=java --command="mvn clean compile -DskipTests" --overwrite --source-root /tmp/src /tmp/dbs/code-db > /dev/null
-          docker run --rm --name codeql \
-            -v $HOME/codeql-dbs:/tmp/dbs \
-            ghcr.io/nealfennimore/codeql:java \
-            codeql database analyze /tmp/dbs/code-db java-code-scanning.qls --sarif-category=java --format=sarif-latest --output=/tmp/dbs/code-db/output.sarif  > /dev/null
+            docker run --rm --name codeql \
+              -v $HOME/codeql-dbs:/tmp/dbs \
+              ghcr.io/nealfennimore/codeql:java \
+              codeql database analyze /tmp/dbs/code-db java-code-scanning.qls --sarif-category=java --format=sarif-latest --output=/tmp/dbs/code-db/output.sarif  > /dev/null
+          fi
           cat $HOME/codeql-dbs/code-db/output.sarif
           EOF
           
