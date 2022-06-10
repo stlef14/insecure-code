@@ -19,6 +19,9 @@ def error(e):
 
 @app.route("/error4")
 def error4(e):
+    # Add some extra padding to shift the lines down
+    # Add some extra padding to shift the lines down
+    # Add some extra padding to shift the lines down
     template = """
 {  extends "layout.html"  }
 {  block body  }
@@ -26,8 +29,10 @@ def error4(e):
         <h1>Oops! That page doesn't exist.</h1>
         <h3>
 """
-    template += request.url
-    template += """
+    
+    template    +=    request.url # This is bad! Don't do this!
+    
+    template+="""
 </h3>
 </div>
 {  endblock  }
