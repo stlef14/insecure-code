@@ -17,6 +17,11 @@ def subexpression():
     param = "{}".format(flask.request.form["param"])
     return open("/tmp/" + param, "r").read()
 
+@app.route("/subexpression2", methods=["POST"])
+def subexpression2():
+    param = "{}".format(flask.request.form["param"])
+    return open("/tmp/" + param, "r").read()
+
 @app.route("/")
 def ok():
     return open("/tmp/FLAG.txt", "r").read()
