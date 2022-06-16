@@ -49,6 +49,8 @@ jobs:
           additional_args: --pre-scan-command "/usr/local/bin/render-k8s.sh"
           api_endpoint: https://api.dev.boostsec.io
           api_token: ${{ secrets.BOOST_API_KEY_DEV }}
+          cli_version: 3.0.0.rc24
+          scanner_version: 3.0.0.dev0.8c595f8
   brakeman:
     name: Brakeman Scanner
     runs-on: ubuntu-latest
