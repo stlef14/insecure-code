@@ -50,7 +50,6 @@ jobs:
           api_endpoint: https://api.dev.boostsec.io
           api_token: ${{ secrets.BOOST_API_KEY_DEV }}
           cli_version: 3.0.0.rc24
-          scanner_image: ghcr.io/boostsecurityio/boostsec-scanner-github
           scanner_version: 3.0.0.rc24
   brakeman:
     name: Brakeman Scanner
