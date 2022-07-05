@@ -1,4 +1,4 @@
-name: BoostSecurity (Dev)
+name: boost SAST (Dev)
 on:
   workflow_dispatch:
     inputs:
