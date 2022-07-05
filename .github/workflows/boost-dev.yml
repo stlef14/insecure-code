@@ -1,4 +1,4 @@
-name: BoostSecurity
+name: BoostSecurity (Dev)
 on:
   workflow_dispatch:
     inputs:
