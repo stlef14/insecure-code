@@ -48,6 +48,7 @@ jobs:
           action: scan
           additional_args: --pre-scan-command "/usr/local/bin/render-k8s.sh"
           api_endpoint: https://api.dev.boostsec.io
+          step_name: scanner-dev
           api_token: ${{ secrets.BOOST_API_KEY_DEV }}
   brakeman:
     name: Brakeman Scanner
@@ -60,7 +61,7 @@ jobs:
         env:
           BOOST_LOG_LEVEL: ${{ github.event.inputs.logLevel }}
         with:
-          step_name: brakeman
+          step_name: brakeman-dev
           action: exec
           additional_args: --require-full-repo
           exec_command: >
@@ -80,7 +81,7 @@ jobs:
         env:
           BOOST_LOG_LEVEL: ${{ github.event.inputs.logLevel }}
         with:
-          step_name: semgrep-auto-config
+          step_name: semgrep-auto-config-dev
           action: exec
           exec_command: >
             docker run -v %CWD%:/src
@@ -101,7 +102,7 @@ jobs:
         env:
           BOOST_LOG_LEVEL: ${{ github.event.inputs.logLevel }}
         with:
-          step_name: semgrep-custom-rules
+          step_name: semgrep-custom-rules-dev
           action: exec
           exec_command: >
             docker run -v %CWD%:/src
@@ -123,7 +124,7 @@ jobs:
           BOOST_LOG_LEVEL: ${{ github.event.inputs.logLevel }}
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          step_name: snyk
+          step_name: snyk-dev
           action: exec
           additional_args: --require-full-repo
           exec_command: >
