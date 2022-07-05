@@ -20,7 +20,7 @@ def error(e):
 
 @app.route("/error4")
 def error4(e):
-    template4 = """
+    template4 = """ # noboost semgrep-python.flask.security.audit.render-template-string.render-template-string semgrep-python.flask.security.dangerous-template-string.dangerous-template-string
 {  extends "layout.html"  }
 {  block body  }
     <div class="center-content error">
