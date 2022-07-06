@@ -20,15 +20,17 @@ def error(e):
 
 @app.route("/error4")
 def error4(e):
-    template4 = """
+    template4 =   """
 {  extends "layout.html"  }
 {  block body  }
     <div class="center-content error">
         <h1>Oops! That page doesn't exist.</h1>
         <h3>
 """
-    template4 += request.url
-    template4  +=    """
+
+    template4    +=  request.url
+    
+    template4  +=  """
 </h3>
 </div>
 {  endblock  }
