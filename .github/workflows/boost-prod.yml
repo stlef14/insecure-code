@@ -1,4 +1,4 @@
-name: boost SAST (Prod)
+name: boost (Prod)
 on:
   workflow_dispatch:
     inputs:
