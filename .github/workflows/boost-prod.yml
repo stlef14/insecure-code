@@ -25,21 +25,6 @@ jobs:
     name: SAST / Scanner
     runs-on: ubuntu-latest
     steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@74b568e8591fbb3115c70f3436a0c6b0909a8504
-        with:
-          egress-policy: block
-          allowed-endpoints: >
-            api.boostsecurity.net:443
-            assets.build.boostsecurity.io:443
-            d2glxqk2uabbnd.cloudfront.net:443
-            d5l0dvt14r5h8.cloudfront.net:443
-            get.helm.sh:443
-            github.com:443
-            public.ecr.aws:443
-            pypi.org:443
-            semgrep.dev:443
-
       - name: Checkout
         uses: actions/checkout@d171c3b028d844f2bf14e9fdec0c58114451e4bf
       - name: Install pre-scan dependencies
