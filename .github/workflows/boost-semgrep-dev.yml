@@ -23,7 +23,7 @@ jobs:
           export SEMGREP_VERSION=0.112@sha256:22cdfb541673843cf8950df1a9cc386237435517f41f0d40bd9b7e306076441f
           export CONVERTER_VERSION=1.0@sha256:22cdfb541673843cf8950df1a9cc386237435517f41f0d40bd9b7e306076441f
           
-          docker pull docker run --rm -v "${PWD}:/src" returntocorp/semgrep:$SEMGREP_VERSION
+          docker pull returntocorp/semgrep:$SEMGREP_VERSION
           #docker pull public.ecr.aws/boostsecurityio/boostsec-convert-semgrep:$CONVERTER_VERSION
 
           cat <<EOF > /tmp/semgrep-wrapper
