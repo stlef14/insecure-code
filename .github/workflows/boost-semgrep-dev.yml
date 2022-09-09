@@ -21,28 +21,29 @@ jobs:
       - name: Setup semgrep and converter
         run: |
           export SEMGREP_VERSION=0.112@sha256:22cdfb541673843cf8950df1a9cc386237435517f41f0d40bd9b7e306076441f
-          export CONVERTER_VERSION=1.0@sha256:22cdfb541673843cf8950df1a9cc386237435517f41f0d40bd9b7e306076441f
+          export CONVERTER_VERSION=2aa6818@sha256:d9cbc9510eca206572e7fd17a0112284055c588bf188da685c715ad571b45896
           
           docker pull returntocorp/semgrep:$SEMGREP_VERSION
-          #docker pull public.ecr.aws/boostsecurityio/boostsec-convert-semgrep:$CONVERTER_VERSION
+          docker pull public.ecr.aws/boostsecurityio/boost-scanner-semgrep:$CONVERTER_VERSION
 
           cat <<EOF > /tmp/semgrep-wrapper
           #!/bin/bash
+          set -euo pipefail
+          shopt -s inherit_errexit
+          
           docker run \
             --rm -v "${PWD}:/src" \
             returntocorp/semgrep:$SEMGREP_VERSION \
             semgrep scan --json --quiet --config auto \
           |
-          cat
-          #docker run \
-          #  --rm \
-          #  --interactive \
-          #  public.ecr.aws/boostsecurityio/boostsecurityio-convert-snyk:latest \
-          #  process -
+          docker run \
+            --rm \
+            --interactive \
+            public.ecr.aws/boostsecurityio/boost-scanner-semgrep:$CONVERTER_VERSION \
+            process
+          
           EOF
           chmod +x /tmp/semgrep-wrapper
-          cat /tmp/semgrep-wrapper
-          /tmp/semgrep-wrapper
       - name: semgrep
         uses: boostsecurityio/boostsec-scanner-github@v3
         with:
