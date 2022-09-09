@@ -34,7 +34,7 @@ jobs:
           docker run \
             --rm -v "${PWD}:/src" \
             returntocorp/semgrep:$SEMGREP_VERSION \
-            semgrep scan --json --quiet --config auto \
+            semgrep scan --sarif --quiet --config auto \
           |
           docker run \
             --rm \
