@@ -45,4 +45,4 @@ jobs:
           api_endpoint: https://api.dev.boostsec.io
           api_token: ${{ secrets.BOOST_API_KEY_DEV }}
           exec_command: /tmp/semgrep-wrapper
-          step_name: semgrep
+          step_name: semgrep-with-taxa
