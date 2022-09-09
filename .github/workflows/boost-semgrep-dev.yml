@@ -31,16 +31,7 @@ jobs:
           set -euo pipefail
           shopt -s inherit_errexit
           
-          docker run \
-            --rm -v "${PWD}:/src" \
-            returntocorp/semgrep:$SEMGREP_VERSION \
-            semgrep scan --sarif --quiet --config auto \
-          |
-          docker run \
-            --rm \
-            --interactive \
-            public.ecr.aws/boostsecurityio/boost-scanner-semgrep:$CONVERTER_VERSION \
-            process
+          docker run --rm -v "${PWD}:/src" returntocorp/semgrep:$SEMGREP_VERSION semgrep scan --sarif --quiet --config auto | docker run --rm --interactive public.ecr.aws/boostsecurityio/boost-scanner-semgrep:$CONVERTER_VERSION process
           
           EOF
           chmod +x /tmp/semgrep-wrapper
